@@ -1,7 +1,9 @@
+const baseURL = "/test-work/";
+
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
-  ssr: true,
+  ssr: false,
 
   css: ["@/assets/styles/main.scss"],
 
@@ -10,6 +12,7 @@ export default defineNuxtConfig({
   },
 
   app: {
+    baseURL,
     pageTransition: {
       name: "page",
       mode: "out-in",

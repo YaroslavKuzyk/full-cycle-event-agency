@@ -1,35 +1,37 @@
 <template>
-  <div class="page page-home">
+  <div class="page page-home" @mousemove="onMouseMove">
     <div class="page-home__content">
-      <div class="page-home__title-wrapper">
-        <h1 class="page-home__title">FULL-CYCLE EVENT AGENCY</h1>
+      <div class="page-home__title-wrapper" :style="titleStyle">
+        <MarqueeText />
       </div>
 
-      <div class="page-home__title-decoration">
-        <div class="page-home__title-decoration__inner">
-          <button class="page-home__showreel-button">
-            <IconShowreel />
-          </button>
+      <div class="page-home__decoration">
+        <div class="page-home__decoration-inner">
+          <ShowreelButton class="page-home__showreel" />
         </div>
       </div>
 
-      <div class="page-home__nav page-home__nav--left">
-        <NuxtLink class="page-home__nav-link" to="/">Where ?</NuxtLink>
-      </div>
-
-      <div class="page-home__nav page-home__nav--right">
-        <NuxtLink class="page-home__nav-link" to="/">What ?</NuxtLink>
-      </div>
-
-      <div class="page-home__nav page-home__nav--bottom">
-        <NuxtLink class="page-home__nav-link" to="/">Who ?</NuxtLink>
-      </div>
+      <HomeNavLinks />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import IconShowreel from "~/components/icons/IconShowreel.vue";
+import { computed } from "vue";
+import { useWindowSize } from "~/composables/useWindowSize";
+import { useMouseParallax } from "~/composables/useMouseParallax";
+import MarqueeText from "~/components/MarqueeText.vue";
+import ShowreelButton from "~/components/ShowreelButton.vue";
+import HomeNavLinks from "~/components/HomeNavLinks.vue";
+
+const { width } = useWindowSize();
+const { offsetX, offsetY, onMouseMove } = useMouseParallax(50);
+
+const rotationAngle = computed(() => (width.value <= 768 ? -30 : -20));
+
+const titleStyle = computed(() => ({
+  transform: `translate(calc(-50% + ${offsetX.value}px), calc(-50% + ${offsetY.value}px)) rotate(${rotationAngle.value}deg)`,
+}));
 </script>
 
 <style scoped lang="scss">
@@ -37,6 +39,11 @@ import IconShowreel from "~/components/icons/IconShowreel.vue";
   box-sizing: border-box;
   padding: 20px 24px;
   height: 100%;
+  overflow: hidden;
+
+  @media (max-width: 430px) {
+    padding: 16px;
+  }
 
   &__content {
     position: relative;
@@ -48,40 +55,16 @@ import IconShowreel from "~/components/icons/IconShowreel.vue";
   }
 
   &__title-wrapper {
-    position: relative;
-  }
-
-  &__title {
-    position: relative;
-    z-index: 2;
-    font-size: 82px;
-    font-weight: 700;
-    line-height: 110%;
-    text-align: center;
-    text-transform: uppercase;
-    max-width: 1024px;
-  }
-
-  &__nav {
     position: absolute;
-    z-index: 1;
-
-    &--left {
-      left: 0;
-      transform: rotate(-90deg);
-    }
-
-    &--right {
-      right: 0;
-      transform: rotate(90deg);
-    }
-
-    &--bottom {
-      bottom: 0;
-    }
+    top: 50%;
+    left: 50%;
+    width: 200%;
+    transform: translate(-50%, -50%) rotate(-20deg);
+    z-index: 2;
+    transition: transform 0.3s ease-out;
   }
 
-  &__title-decoration {
+  &__decoration {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -89,9 +72,19 @@ import IconShowreel from "~/components/icons/IconShowreel.vue";
     height: 578px;
     z-index: 1;
     transform: translate(-50%, -50%);
+
+    @media (max-width: 1024px), (max-height: 900px) {
+      width: 482px;
+      height: 482px;
+    }
+
+    @media (max-width: 430px) {
+      width: 294px;
+      height: 294px;
+    }
   }
 
-  &__title-decoration__inner {
+  &__decoration-inner {
     position: relative;
     z-index: 2;
     width: 100%;
@@ -109,52 +102,29 @@ import IconShowreel from "~/components/icons/IconShowreel.vue";
       border-radius: 50%;
       z-index: 1;
       filter: blur(76px);
+
+      @media (max-width: 1024px), (max-height: 900px) {
+        width: 482px;
+        height: 482px;
+      }
+
+      @media (max-width: 430px) {
+        width: 294px;
+        height: 294px;
+        filter: blur(46px);
+      }
     }
   }
 
-  &__showreel-button {
+  &__showreel {
     position: absolute;
     bottom: 23px;
     right: 23px;
     z-index: 2;
 
-    background: transparent;
-    border: none;
-
-    &:hover {
-      animation: infiniteBackwardRotate 5s linear infinite;
-    }
-  }
-
-  &__nav-link {
-    position: relative;
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 140%;
-    text-transform: lowercase;
-    text-decoration: none;
-    color: var(--primary-color);
-    padding-bottom: 3px;
-    transition: color 0.5s ease;
-
-    &::after {
-      content: "";
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 0;
-      height: 1px;
-      background-color: var(--primary-color);
-      transition: width 0.5s ease;
-    }
-
-    &:hover {
-      color: var(--light-color);
-
-      &::after {
-        width: 100%;
-        background-color: var(--light-color);
-      }
+    @media (max-width: 430px) {
+      bottom: -21px;
+      right: 32px;
     }
   }
 }

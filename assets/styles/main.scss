@@ -1,0 +1,11 @@
+@use "./variables";
+@use "./fonts";
+@use "./animations";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+  font-family: "Grtsk Giga";
+}
